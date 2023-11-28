@@ -22,45 +22,14 @@ class TimeParser(BasicParser):
                 date, time = time, date
 
             try:
-                date = dateutil.parser.parse(date)
-            except:
                 date = TimeParser.extract_date(date)
+            except:
+                date = dateutil.parser.parse(date)
 
             if len(re.findall(r'\d+', time)) == 3 or len(re.findall(r'\d+', time)) == 6:
                 has_sec = True
             
             time, has_sec = TimeParser.extrac_time(time)
-
-        # elif 'on' in text:
-        #     time, date = text.split('on')
-            
-        #     if 'am' in date or 'pm' in date:
-        #         date, time = time, date
-            
-        #     time = TimeParser.extrac_time(time)
-
-        #     date.replace(',', '-').replace('.', '-')
-        #     if date.count('-') == 2:
-        #         d, m, y = map(int, date.split('-'))
-        #         if m > 12 : m, d = d, m
-        #         if y < 1000 : y = 2000 + y
-        #         date = datetime(y, m, d)
-        #     elif 'of' in date:  ##the 25th of September 2013
-        #         date = date.replace('of', '').replace('th', '').replace('st', '').replace('nd', '').replace('rd', '')
-        #         date = dateutil.parser.parse(date)
-        #     else:
-        #         date = dateutil.parser.parse(date)
-            
-            
-        # elif '@' in text:
-        #     time, date = text.split('@')
-        #     if len(re.findall(r'\d+', time)) == 3: ## time 可能會有秒 所以這邊錯
-        #         time, date = date, time
-
-        #     time = TimeParser.extrac_time(time)
-
-        #     date.replace(',', '-').replace('.', '-')
-        #     date = dateutil.parser.parse(date)
         
         elif len(re.findall(r'\d+', text)) == 6:
 
@@ -73,16 +42,6 @@ class TimeParser(BasicParser):
             elif len(re.findall(r'\d+', text)[2])==4:
                 date = datetime(int(date[2]), int(date[1]), int(date[0]), int(date[3]), int(date[4]), int(date[5]))
                 time = date
-
-            # date = re.findall(r'\d+', text)
-            # if len(re.findall(r'\d+', text)[0])==4:
-            #     date = datetime(int(date[0]), int(date[1]), int(date[2]), int(date[3]), int(date[4]), int(date[5]))
-            #     time = datetime(1,1,1, date.hour, date.minute, date.second)
-
-            # else:
-            #     print(date)
-            #     date = datetime(int(date[3]), int(date[4]), int(date[5]), int(date[0]), int(date[1]), int(date[2]))
-            #     time = datetime(int(date[3]), int(date[4]), int(date[5]), int(date[0]), int(date[1]), int(date[2]))
         
         elif len(re.findall(r'\d+', text)) == 5:
             date = re.findall(r'\d+', text)
@@ -130,7 +89,7 @@ class TimeParser(BasicParser):
                 m = m%12
                 d = d%31
 
-            if m > 12 : m, d = d, m
+            if m > 12 and d <= 12 : m, d = d, m
             if y < 1000 : y = 2000 + y
             return datetime(y, m, d)
         elif 'of' in txt:

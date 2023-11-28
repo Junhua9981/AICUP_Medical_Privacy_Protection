@@ -59,7 +59,7 @@ def main():
                 correct += 1
             else:
                 wrong += 1
-                # print_log(t, ans)
+                print_log(t, ans)
 
                 
         except Exception as e:
