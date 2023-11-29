@@ -6,9 +6,9 @@ from parsers.time_parser import TimeParser
 class Parser:
     def __init__(self):
         self.parsers = {
-            # 'DATE': DateParser(),
-            # 'SET': SetParser(),
-            # 'DURATION': DurationParser(),
+            'DATE': DateParser(),
+            'SET': SetParser(),
+            'DURATION': DurationParser(),
             'TIME': TimeParser()
         }
 
