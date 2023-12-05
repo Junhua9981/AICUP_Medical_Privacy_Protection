@@ -67,12 +67,53 @@ class TimeParser(BasicParser):
                 elif 'am' in text :
                     date = datetime(int(date[2]), int(date[1]), int(date[0]), int(date[3]), int(date[4]))
                     time = date
+                elif len( re.findall(r"\d+\/\d+\/\d+ \d+:\d+", text) ) == 1 and re.findall(r"\d+\/\d+\/\d+ \d+:\d+", text)[0] == text:
+                    date, time = text.split(' ')
+                    date = date.split('/')
+                    time = time.split(':')
+                    if int(date[2]) > 31 and int(date[0]) < 31:
+                        return f"{date[2] if len(date[2]) == 4 else '20'+date[2]}-{int(date[1]):02d}-{int(date[0]):02d}T{int(time[0]):02d}:{int(time[1]):02d}"
+                    
+                    return f"{date[2] if len(date[2]) == 4 else '20'+date[2]}-{int(date[1]):02d}-{int(date[0]):02d}T{int(time[0]):02d}:{int(time[1]):02d}"
+
+
                 else:
                     date = datetime(int(date[4]), int(date[3]), int(date[2]), int(date[0]), int(date[1]))
                     time = date
+        
+        elif len(re.findall(r'\d+', text)) == 3:
+            date = re.findall(r'\d+', text)
+            return f"{date[2] if len(date[2]) == 4 else '20'+date[2]}-{int(date[1]):02d}-{int(date[0]):02d}"
+
+        elif len( re.findall(r'\/\d+\/\d+', text) ) == 1 and re.findall(r'\/\d+\/\d+', text)[0] == text:
+            date = re.findall(r'\/\d+\/\d+', text)[0]
+            date = date.split('/')
+            return f"{date[2] if len(date[2]) == 4 else '20'+date[2]}-{int(date[1]):02d}"
+        elif len( re.findall(r'\d+\/\d+\/', text) ) == 1 and re.findall(r'\d+\/\d+\/', text)[0] == text:
+            date = re.findall(r'\d+\/\d+\/', text)[0]
+            date = date.split('/')
+            return f"{date[0] if len(date[0]) == 4 else '20'+date[0]}-{int(date[1]):02d}"
+        
+        elif  len( re.findall(r'\.\d+\.\d+', text) ) == 1 and re.findall(r'\.\d+\.\d+', text)[0] == text:
+            date = re.findall(r'\.\d+\.\d+', text)[0] #.\d+.\d+
+            date = date.split('.')
+            return f"{date[2] if len(date[2]) == 4 else '20'+date[2]}-{int(date[1]):02d}"
+        elif  len( re.findall(r'\d+\.\d+\.', text) ) == 1 and re.findall(r'\d+\.\d+\.', text)[0] == text:
+            date = re.findall(r'\d+\.\d+\.', text)[0]
+            date = date.split('.')
+            return f"{date[0] if len(date[0]) == 4 else '20'+date[0]}-{int(date[1]):02d}"
+
+        elif len(text) == 4 and text.isdigit():
+            return text
+
+        
+
         else:
+            
             return None, None, None
         try:
+            if date.year < 1000:
+                date = datetime(date.year + 2000, date.month, date.day)
             if has_sec:
                 return datetime.strftime(datetime(date.year, date.month, date.day, time.hour, time.minute, time.second), "%Y-%m-%dT%H:%M:%S")
             return datetime.strftime(datetime(date.year, date.month, date.day, time.hour, time.minute, time.second), "%Y-%m-%dT%H:%M")

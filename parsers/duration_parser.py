@@ -10,7 +10,7 @@ class DurationParser(BasicParser):
             num = list(num)
             num = (num[0] + num[1])/2
             if 'd' in text:
-                ret = f"P{ num }D"
+                ret = f"P{num}D"
             
             elif 'y' in text:
                 ret = f"P{num}Y"
